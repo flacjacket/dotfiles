@@ -21,7 +21,7 @@ function add_file() {
 function add_folder() {
 	orig_folder=$1
 	dest_folder=$2
-	[ -d $dest_folder ] || echo mkdir -v $dest_folder
+	[ -d $dest_folder ] || mkdir -v $dest_folder
 	for i in $(find $orig_folder -mindepth 1 -maxdepth 1); do
 		[ -f $i ] && add_file $i $dest_folder/$(basename $i)
 		[ -d $i ] && add_folder $i $dest_folder/$(basename $i)
