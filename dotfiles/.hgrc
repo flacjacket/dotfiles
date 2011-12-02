@@ -1,0 +1,11 @@
+[ui]
+username = Sean Vig <sean.v.775@gmail.com>
+editor = vim
+[extensions]
+rebase = 
+mq =
+[hooks]
+# Prevent "hg pull" if MQ patches are applied.
+prechangegroup.mq-no-pull = ! hg qtop > /dev/null 2>&1
+# Prevent "hg push" if MQ patches are applied.
+preoutgoing.mq-no-push = ! hg qtop > /dev/null 2>&1
