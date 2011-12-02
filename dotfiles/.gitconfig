@@ -6,16 +6,16 @@
 	user = flacjacket
 
 [color]
-    diff = auto
-    status = auto
-    branch = auto
-    interactive = auto
+	diff = auto
+	status = auto
+	branch = auto
+	interactive = auto
 
 [alias]
-    ci = commit
-    di = diff --color-words
-    st = status
-    co = checkout
+	ci = commit
+	di = diff --color-words
+	st = status
+	co = checkout
 	br = branch
-    logl = log --pretty=oneline --abbrev-commit
-    logs = log --stat
+	logl = log --pretty=oneline --abbrev-commit
+	logs = log --stat
