@@ -19,3 +19,6 @@
 	br = branch
 	logl = log --pretty=oneline --abbrev-commit
 	logs = log --stat
+
+[core]
+	pager = less -FX
