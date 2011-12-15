@@ -5,7 +5,6 @@ clean () {
 	[ -e apod.jpg ] && rm apod.jpg
 	[ -e candh-tmp1.png ] && rm candh-tmp1.png
 	[ -e candh-tmp2.png ] && rm candh-tmp2.png
-	exit
 }
 
 cd ~/.apod/

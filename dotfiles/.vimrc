@@ -81,16 +81,20 @@ au InsertLeave * match ExtraWhitespace /\s\+$/
 " Map <C-L> (redraw screen) to also turn off search highlighting until the next search
 nno <C-L> :nohl<CR><C-L>
 
+" Map :W to :w and :Q to :q
+cm W w
+cm Q q
+
 " Dvorak re-bindings
 no t k
-no T K
+no T gk
 no n j
-no N J
+no N gj
 no s l
 no S L
 
-no j n
-no k N
+no k n
+no j N
 
 " Bind moving windows
 no <c-h> <c-w>h
