@@ -1,17 +1,19 @@
 import XMonad
 import qualified XMonad.StackSet as S
+import Control.Monad
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.ManageHelpers
+import XMonad.Layout.LayoutModifier
 import XMonad.Layout.Grid
-import XMonad.Layout.IM
-import XMonad.Layout.Named
-import XMonad.Layout.NoBorders
 import XMonad.Layout.PerWorkspace
+import XMonad.Layout.Named
+import XMonad.Layout.IM
+import XMonad.Layout.NoBorders
 import XMonad.Layout.Reflect
-import XMonad.Util.EZConfig(additionalKeys)
 import XMonad.Util.Run(spawnPipe)
-
+import XMonad.Util.EZConfig(additionalKeys)
+import XMonad.Util.WindowProperties
 import Data.Ratio
 import System.IO
 
@@ -21,87 +23,88 @@ myModMask = mod4Mask
 -- Set default configuration
 myBaseConfig = defaultConfig
 
--- Set default terminal
-myTerminal = "urxvt"
-
--- Set up borders
-myBorderWidth = 1
+--Set up display
+myBorderWidth = 2
 myNormalBorderColor = "#202030"
 myFocusedBorderColor = "#A0A0D0"
 
--- Set workspaces
-myWorkspaces = (miscs 5) ++ ["6-music", "7-fullscreen", "8-skype", "9-im"]
-	where miscs = map (("" ++) . show) . (flip take) [1..]
+-- Set default terminal
+myTerminal = "urxvt"
 
--- Set Layouts
+-- Set workspaces
+myWorkspaces = (miscs 3) ++ ["web", "email", "gimp", "music", "fullscreen", "im"]
+    where miscs = map (("" ++) . show) . (flip take) [1..]
+-- isFullscreen = (== "fullscreen")
+
+-- Set layouts
 basicLayout = Tall nmaster delta ratio where
-		nmaster	= 1
-		delta	= 3/100
-		ratio	= 1/2
+		nmaster = 1
+		delta   = 3/100
+		ratio   = 1/2
 tallLayout = named "tall" $ avoidStruts $ basicLayout
 wideLayout = named "wide" $ avoidStruts $ Mirror basicLayout
 singleLayout = named "single" $ avoidStruts $ noBorders Full
 fullscreenLayout = named "fullscreen" $ noBorders Full
-imLayout = avoidStruts $ withIM (1%6) (ClassName "Pidgin") Grid
-skypeLayout = avoidStruts $ withIM (1%6) (Or (Title "sean.vig - Skype™ (Beta)") (Title "Skype™ 2.2 (Beta) for Linux")) Grid
+imLayout = avoidStruts $ reflectHoriz $ withIM (1%6) (ClassName "Pidgin") Grid
+--	chatLayout      = Grid
+--	ratio           = 1%6
+--	rosters			= [pidginRoster]
+--	pidginRoster    = And (ClassName "Pidgin") (Role "buddy_list")
+--	skypeRoster     = (ClassName "Skype") `And` (Not (Title "Options")) `And` (Not (Role "Chats")) `And` (Not (Role "CallWindowForm")
 
-myLayoutHook = fullscreen $ im $ skype $ normal where
-	normal		= tallLayout ||| wideLayout ||| singleLayout
-	fullscreen	= onWorkspace "7-fullscreen" fullscreenLayout
-	skype		= onWorkspace "8-skype" skypeLayout
-	im			= onWorkspace "9-im" imLayout
+myLayoutHook = fullscreen $ im $ normal where
+	normal     = tallLayout ||| wideLayout ||| singleLayout
+	fullscreen = onWorkspace "fullscreen" fullscreenLayout
+	im         = onWorkspace "im" imLayout
 
 -- put the Pidgin and Skype windows in the im workspace
-myManageHook = imManageHooks <+> fullscreenHooks <+> manageDocks <+> manageHook myBaseConfig
-imManageHooks = composeAll [className =? "Pidgin" --> moveToIM
-	, className =? "Skype" --> moveToSkype
-	, className =? "MPlayer" --> doShift "fullscreen"
+myManageHook = imManageHooks <+> facebookManageHooks <+> manageDocks <+> manageHook myBaseConfig
+imManageHooks = composeAll [isIM --> moveToIM
+	, className =? "mplayer" --> doFloat
 	, className =? "Canvas" --> doFloat
-	, className =? "net-minecraft-LauncherFrame" --> doFloat
-	, className =? "qemu-system-x86_64" --> doFloat
-	, className =? "qemu" --> doFloat
-	, className =? "net-yapbam-gui-Launcher" --> doFloat
-	, className =? "Gnuplot" --> doFloat] where
-		moveToIM = doF $ S.shift "9-im"
-		moveToSkype = doF $ S.shift "8-skype"
-fullscreenHooks = isFullscreen --> doFullFloat
+	, className =? "Chromium" --> doShift "web"] where
+		isIM     = foldr1 (<||>) [isPidgin, isSkype]
+		isPidgin = className =? "Pidgin"
+		isSkype  = className =? "Skype"
+		moveToIM = doF $ S.shift "im"
+facebookManageHooks = isFullscreen --> doFullFloat
 
--- Setup bar colors
-myNormalBGColor  = "#2e3436"
-myFocusedBGColor = "#414141"
-myNormalFGColor  = "#E0FFFF"
-myFocusedFGColor = "#1994d1"
-myUrgentFGColor  = "#f57900"
-myUrgentBGColor  = "#2e3436"
-myVisibleBGColor = "#515151"
+-- Setup dzen bars
+myWorkspaceBar = "dzen2 -ta l -h 13 -w 640 -x 0 -fn '-*-terminus-*-r-normal-*-*-90-*-*-*-*-iso8859-*' -bg '#2c2c32' -fg 'grey70' -p"
+myStatusBar = "/home/sean/.dzen/dzenscript | dzen2 -ta r -h 13 -w 640 -x 640 -fn '-*-terminus-*-r-normal-*-*-90-*-*-*-*-iso8859-*' -bg '#2c2c32' -fg 'grey70' -p"
 
-xmonadDir = "/home/sean/.xmonad"
-
--- Setup dzen bar
-myWorkspaceBar = "dzen2 -ta l -h 13 -w 920 -x 0 -fn '-*-terminus-*-r-normal-*-*-120-*-*-*-*-iso8859-*' -bg '#2c2c32' -fg 'grey70' -p"
+myNormalFGColor = "green"
 
 mydzenPP handle = defaultPP
-	{ ppCurrent	= wrap("^fg(" ++ myFocusedFGColor ++ ")^bg(" ++ myFocusedBGColor ++ ")^p(2)") "^p(4)^fg()^bg()"
-	, ppUrgent	= wrap ("^fg(" ++ myUrgentFGColor ++ ")^bg(" ++ myUrgentBGColor ++ ")^p(2)") "^p(4)^fg()^bg()"
-	, ppVisible	= wrap ("^fg(" ++ myNormalFGColor ++ ")^bg(" ++ myNormalBGColor ++ ")^p(2)") "^p(4)^fg()^bg()"
-	, ppHidden	= wrap ("^fg(" ++ myNormalFGColor ++ ")^bg(" ++ myVisibleBGColor ++ ")^p(2)") "^p(4)^fg()^bg()"
-	, ppSep		= ""
-	, ppOutput	= hPutStrLn handle
-	, ppTitle	= dzenColor myNormalFGColor "" . wrap "< " " >"
-	, ppLayout	= dzenColor myFocusedFGColor "" . wrap "^p(4)" "^p(4)"
+	{ ppOutput 	= hPutStrLn handle
+	, ppTitle       = dzenColor myNormalFGColor "" . wrap "< " " >"
 	}
 
--- Main
+--	{ ppCurrent	= wrap("^fg(" ++ myFocusedFGColor ++ ")^bg(" ++ myFocusedBGColor ++ ")^p(2)") "^p(4)^fg()^bg()"
+--	, ppUrgent	= wrap ("^fg(" ++ myUrgentFGColor ++ ")^bg(" ++ myUrgentBGColor ++ ")^p(2)") "^p(4)^fg()^bg()"
+--	, ppVisible	= wrap ("^fg(" ++ myNormalFGColor ++ ")^bg(" ++ myNormalBGColor ++ ")^p(2)") "^p(4)^fg()^bg()"
+--	, ppHidden	= wrap ("^fg(" ++ myNormalFGColor ++ ")^bg(" ++ myVisibleBGColor ++ ")^p(2)") "^p(4)^fg()^bg()"
+--	, ppSep		= ""
+--	, ppOutput	= hPutStrLn handle
+--	, ppTitle	= dzenColor myNormalFGColor "" . wrap "< " " >"
+--	, ppLayout	= dzenColor myFocusedFGColor "" . wrap "^p(4)" "^p(4)"
+--	}
+
+-- Run everything
 main = do
 	workspacebarpipe <- spawnPipe myWorkspaceBar
-	xmonad $ myBaseConfig
-		{ modMask			= myModMask
-		, layoutHook		= myLayoutHook
-		, manageHook		= myManageHook
+--	statusbarpipe <- spawnPipe myStatusBar
+	xmonad $ defaultConfig
+		{ modMask		= myModMask
 		, workspaces		= myWorkspaces
-		, terminal			= myTerminal
-		, borderWidth		= myBorderWidth
+		, manageHook		= myManageHook
+		, layoutHook		= myLayoutHook
+		, terminal		= myTerminal
 		, normalBorderColor	= myNormalBorderColor
-		, focusedBorderColor= myFocusedBorderColor
-		, logHook			= dynamicLogWithPP $ mydzenPP workspacebarpipe
-		}
+		, focusedBorderColor	= myFocusedBorderColor
+		, logHook		= dynamicLogWithPP $ mydzenPP workspacebarpipe
+		} `additionalKeys`
+		[ ((myModMask .|. shiftMask, xK_l), spawn "xscreensaver-command -lock")
+		, ((controlMask, xK_Print), spawn "sleep 0.2; scrot -s")
+		, ((0, xK_Print), spawn "scrot")
+		]

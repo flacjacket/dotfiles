@@ -1,3 +1,7 @@
+if [ -f ~/.bash_aliases ]; then
+	. ~/.bash_aliases
+fi
+
 # Test for an interactive shell.  There is no need to set anything
 # past this point for scp and rcp, and it's important to refrain from
 # outputting anything in those cases.
@@ -15,7 +19,7 @@ shopt -s checkwinsize
 
 use_color=false
 case "$TERM" in
-	rxvt|screen) use_color=true
+	linux|rxvt|screen) use_color=true
 esac
 
 if ${use_color}; then
@@ -24,8 +28,3 @@ else
 	PS1='\u@\h \w $(__git_ps1 "%s ")\$ '
 fi
 unset use_color
-
-alias ipython-notebook="ipython notebook --pylab=inline"
-alias isympy-notebook="ipython notebook --profile=sympy"
-alias ipython-qtconsole="ipython-qtconsole --pylab=inline"
-alias isympy-qtconsole="ipython-qtconsole --profile=sympy"

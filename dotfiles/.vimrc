@@ -6,7 +6,7 @@ set fenc=utf-8
 set termencoding=utf-8
 
 " detect filetype
-filetype indent plugin on
+filetype plugin indent on
 set autoindent
 set smartindent
 
@@ -41,6 +41,7 @@ set tabstop=4
 set shiftwidth=4
 set noexpandtab
 au BufRead,BufNewFile *.py set expandtab
+au BufRead,BufNewFile *.tex set textwidth=80
 set smarttab
 set scrolloff=3
 
