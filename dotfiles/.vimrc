@@ -102,3 +102,9 @@ no <c-h> <c-w>h
 no <c-t> <c-w>k
 no <c-n> <c-w>j
 no <c-s> <c-w>l
+
+" Hardcore mode
+no <Up> <nop>
+no <Down> <nop>
+no <Left> <nop>
+no <Right> <nop>
