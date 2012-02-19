@@ -35,8 +35,8 @@ if [ $? -ne 0 ]; then
 fi
 
 if $(xdpyinfo > /dev/null 2>&1); then
-	WIDTH=$(xdpyinfo | grep dimensions | perl -ne 'm/([0-9]{3,})x([0-9]{3,})/; print "$1";' | head -n1 )
-	HEIGHT=$(xdpyinfo | grep dimensions | perl -ne 'm/([0-9]{3,})x([0-9]{3,})/; print "$2";' | head -n1 )
+	WIDTH=$(xdpyinfo | grep dimensions | perl -ne 'm/([0-9]{3,})x([0-9]{3,})/; print "$1";' | sort -n | head -n1 )
+	HEIGHT=$(xdpyinfo | grep dimensions | perl -ne 'm/([0-9]{3,})x([0-9]{3,})/; print "$2";' | sort -n | head -n1 )
 else
 	if [ -e default_size.sh ]; then
 		source ./default_size.sh
@@ -54,7 +54,11 @@ convert -extent "${WIDTH}x${HEIGHT}" -background none -gravity South candh-tmp1.
 
 composite -gravity South candh-tmp2.png apod.png apod.png
 
-[ "$(w | grep xmonad)" ] && feh --bg-center apod.png
+if $(xdpyinfo > /dev/null 2>&1); then
+	[ "$(w | grep xmonad)" ] && feh --bg-center apod.png
+	log "Success"
+else
+	log "Success (No update)"
+fi
 
-log "Success"
 clean
