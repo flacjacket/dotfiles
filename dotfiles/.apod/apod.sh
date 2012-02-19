@@ -35,7 +35,6 @@ if [ $? -ne 0 ]; then
 fi
 
 if $(xdpyinfo > /dev/null 2>&1); then
-	echo "in"
 	WIDTH=$(xdpyinfo | grep dimensions | perl -ne 'm/([0-9]{3,})x([0-9]{3,})/; print "$1";' | head -n1 )
 	HEIGHT=$(xdpyinfo | grep dimensions | perl -ne 'm/([0-9]{3,})x([0-9]{3,})/; print "$2";' | head -n1 )
 else
@@ -51,9 +50,9 @@ fi
 convert -resize "${WIDTH}x${HEIGHT}" apod.jpg apod.png
 convert -resize "${WIDTH}x${HEIGHT}" candh.png candh-tmp1.png
 
-convert -gravity south -extent ${WIDTH}x${HEIGHT} -background none candh-tmp1.png candh-tmp2.png
+convert -extent "${WIDTH}x${HEIGHT}" -background none -gravity South candh-tmp1.png candh-tmp2.png
 
-composite -gravity center candh-tmp2.png apod.png apod.png
+composite -gravity South candh-tmp2.png apod.png apod.png
 
 [ "$(w | grep xmonad)" ] && feh --bg-center apod.png
 
