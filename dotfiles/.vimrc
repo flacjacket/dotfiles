@@ -39,8 +39,11 @@ set showmatch
 " tabbing settings
 set tabstop=4
 set shiftwidth=4
-set noexpandtab
-au BufRead,BufNewFile *.py set expandtab
+set expandtab
+au BufRead,BufNewFile *.tex set shiftwidth=2
+au BufRead,BufNewFile *.tex set tabstop=2
+au BufRead,BufNewFile *.sty set shiftwidth=2
+au BufRead,BufNewFile *.sty set tabstop=2
 au BufRead,BufNewFile *.tex set textwidth=80
 set smarttab
 set scrolloff=3
