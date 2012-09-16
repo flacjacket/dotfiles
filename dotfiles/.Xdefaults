@@ -2,9 +2,9 @@ urxvt*cursorColor:		green
 urxvt*underlineColor:	yellow
 urxvt*scrollBar:		false
 
-urxvt*saveLines:	32767
+urxvt*saveLines:	65535
 urxvt*buffered:		true
-urxvt*termName:		rxvt
+urxvt*termName:		rxvt-256color
 urxvt*loginShell:	true
 urxvt*depth:		32
 urxvt*scrollTtyOutput:	false
