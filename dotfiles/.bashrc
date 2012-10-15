@@ -1,5 +1,9 @@
 [[ $- != *i* ]] && return
-[[ $TERM != "screen" ]] && exec tmux
+
+if [[ -z "$TMUX" ]]; then
+    tmux has-session 2>&1 &> /dev/null
+    [[ $? -eq 0 ]] && exec tmux attach || exec tmux
+fi
 
 if [ -f ~/.bash_aliases ]; then
 	. ~/.bash_aliases
