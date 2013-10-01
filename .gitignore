@@ -1,0 +1,5 @@
+*.swp
+*.pyc
+
+dotfiles/.dzen/pid
+dotfiles/.dzen/pipe
