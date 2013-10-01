@@ -9,6 +9,7 @@ if [ -f ~/.bash_aliases ]; then
 	. ~/.bash_aliases
 fi
 
+stty stop undef
 shopt -s histappend
 HISTCONTROL=ignoredups:ignorespace
 HISTSIZE=1000

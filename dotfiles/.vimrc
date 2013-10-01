@@ -1,5 +1,8 @@
 " .vimrc
 
+" pathogen
+call pathogen#infect()
+
 " set UTF-8 encoding
 set enc=utf-8
 set fenc=utf-8
@@ -45,6 +48,7 @@ au BufRead,BufNewFile *.tex set tabstop=2
 au BufRead,BufNewFile *.sty set shiftwidth=2
 au BufRead,BufNewFile *.sty set tabstop=2
 au BufRead,BufNewFile *.tex set textwidth=80
+"au BufEnter *.hs compiler ghc
 set smarttab
 set scrolloff=3
 

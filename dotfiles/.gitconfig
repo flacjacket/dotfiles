@@ -2,9 +2,6 @@
 	name = Sean Vig
 	email = sean.v.775@gmail.com
 
-[github]
-	user = flacjacket
-
 [color]
 	diff = auto
 	status = auto
@@ -23,3 +20,5 @@
 
 [core]
 	pager = less -FRSX
+[push]
+	default = simple

@@ -1,4 +1,1 @@
-alias ipython-notebook="ipython notebook --pylab=inline"
-alias isympy-notebook="ipython notebook --profile=sympy"
-alias ipython-qtconsole="ipython qtconsole --pylab=inline"
-alias isympy-qtconsole="ipython qtconsole --profile=sympy"
+alias gist="GITHUB_OAUTH_TOKEN=ee028cf1525e3f5db28a10d11b5049ca70c5852f nopaste --private --service Gist"
