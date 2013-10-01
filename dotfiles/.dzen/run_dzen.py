@@ -5,15 +5,24 @@ from __future__ import print_function
 import os
 import psutil
 import subprocess
+import socket
 import sys
 import threading
 from ctypes import *
 from time import localtime, strftime
 
+host = socket.gethostname()
+if host == "jupiter":
+    # Desktop
+    show_network = show_battery = False
+elif host == "minerva":
+    # Laptop
+    show_network = show_battery = True
+
 dzen_cmd = "/usr/bin/dzen2 -xs 1 -ta r -h 13 -w 500 -x -500 -fn -*-terminus-*-r-normal-*-*-90-*-*-*-*-iso8859-* -p"
-xkb_cmd = "/home/sean/.dzen/xkblayout print %e"
+xkb_cmd = os.path.expanduser("~/.dzen/xkblayout print %e")
 icon_dir = os.path.expanduser("~/.dzen/icons")
-temp_file = "/sys/bus/platform/devices/coretemp.0/temp1_input"
+temp_file = "/sys/bus/platform/devices/coretemp.0/temp2_input"
 
 dzen_thread = 0
 
@@ -168,9 +177,11 @@ def main():
         f.write('\n')
 
     # 10
-    set_network(output)
+    if show_network:
+        set_network(output)
     # 30
-    set_bat(output)
+    if show_battery:
+        set_bat(output)
     # 80
     set_xkb(output)
     # 90
