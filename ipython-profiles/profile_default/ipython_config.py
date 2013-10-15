@@ -3,7 +3,13 @@ if os.name == "nt":
     os.chdir('C:\\Users\\seanvig2\\Documents')
 
 c = get_config()
-c.InteractiveShellApp.extensions = ['autoreload']
+app = c.InteractiveShellApp
 
-c.InteractiveShellApp.exec_lines = []
-c.InteractiveShellApp.exec_lines.append('%autoreload 2')
+app.extensions = ['autoreload']
+
+app.exec_lines = []
+app.exec_lines.append('%autoreload 2')
+app.exec_lines.append('import numpy as np')
+app.exec_lines.append('import scipy as sp')
+app.exec_lines.append('import pandas as pd')
+app.exec_lines.append('import matplotlib.pyplot as plt')
