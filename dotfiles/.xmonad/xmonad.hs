@@ -99,7 +99,7 @@ mainConfig = defaultConfig {
 		, workspaces			= myWorkspaces
 		} `additionalKeys`
 		[ ((myModMask .|. shiftMask, xK_l), spawn "xscreensaver-command -lock")
- 		, ((myModMask, xK_i), spawn "ipython qtconsole --profile=sympy")
+		, ((myModMask, xK_i), spawn "ipython3 qtconsole --profile=sympy")
 		, ((controlMask, xK_Print), spawn "sleep 0.2; scrot -s")
 		, ((0, xK_Print), spawn "scrot")
 		]

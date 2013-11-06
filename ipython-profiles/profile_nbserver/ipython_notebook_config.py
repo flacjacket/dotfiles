@@ -17,14 +17,14 @@ app = c.InteractiveShellApp
 load_subconfig('ipython_config.py', profile='sympy')
 load_subconfig('ipython_notebook_config.py', profile='sympy')
 
-app.extensions.append('nbtoc')
+#app.extensions.append('nbtoc')
 
 c.IPKernelApp.matplotlib = 'inline'
 
 c.InlineBackend.figure_format = 'svg'
 
 c.NotebookManager.notebook_dir = nbdir
-c.NotebookManager.save_script = True
+#c.NotebookManager.save_script = True
 
 c.NotebookApp.open_browser = False
 
