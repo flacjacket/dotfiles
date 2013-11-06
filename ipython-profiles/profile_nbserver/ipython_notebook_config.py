@@ -24,7 +24,7 @@ c.IPKernelApp.matplotlib = 'inline'
 c.InlineBackend.figure_format = 'svg'
 
 c.NotebookManager.notebook_dir = nbdir
-#c.NotebookManager.save_script = True
+c.NotebookManager.save_script = True
 
 c.NotebookApp.open_browser = False
 
