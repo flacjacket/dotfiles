@@ -3,8 +3,6 @@ import os
 c = get_config()
 app = c.InteractiveShellApp
 
-load_subconfig('ipython_config.py', profile='default')
-
 lines = """\
 from __future__ import division
 from sympy import *

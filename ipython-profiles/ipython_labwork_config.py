@@ -1,15 +1,14 @@
 import os
-if os.name == "nt":
-    os.chdir('C:\\Users\\seanvig2\\Documents')
 
 c = get_config()
 app = c.InteractiveShellApp
 
-app.extensions = ['autoreload']
+load_subconfig('ipython_config.py', profile='sympy')
 
-app.exec_lines = []
-app.exec_lines.append('%autoreload 2')
 app.exec_lines.append('import numpy as np')
 app.exec_lines.append('import scipy as sp')
 app.exec_lines.append('import pandas as pd')
 app.exec_lines.append('import matplotlib.pyplot as plt')
+
+if os.name == 'nt':
+    c.IPythonWidget.font_family = 'DejaVu Sans Mono'
