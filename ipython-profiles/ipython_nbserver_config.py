@@ -12,7 +12,6 @@ nbdir = os.path.normpath(nbdir)
 c = get_config()
 app = c.InteractiveShellApp
 
-load_subconfig('ipython_config.py', profile='default')
 load_subconfig('ipython_config.py', profile='labwork')
 
 c.IPKernelApp.matplotlib = 'inline'

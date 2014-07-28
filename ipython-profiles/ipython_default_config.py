@@ -7,3 +7,4 @@ app = c.InteractiveShellApp
 
 app.extensions = ['autoreload']
 app.exec_lines.append('%autoreload 2')
+app.exec_lines.append('%matplotlib inline')
