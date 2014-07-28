@@ -21,5 +21,7 @@ c.NotebookManager.save_script = True
 
 c.NotebookApp.open_browser = False
 
+app.exec_lines.append("nbdir = r'%s'" % nbdir)
+
 if os.name == 'nt':
     app.exec_lines.append("init_printing(use_latex='mathjax')")
