@@ -14,8 +14,8 @@ sys.path.append(nbdir)
 c = get_config()
 app = c.InteractiveShellApp
 
-load_subconfig('ipython_config.py', profile='sympy')
 load_subconfig('ipython_config.py', profile='default')
+load_subconfig('ipython_config.py', profile='sympy')
 
 app.exec_lines.append('import numpy as np')
 app.exec_lines.append('import scipy as sp')
