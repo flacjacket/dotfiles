@@ -1,9 +1,9 @@
-*background:	#111111
-*foreground:	#babdb6
-*fadeColor:     #002b36
-*cursorColor:   green
-*underlineColor:    yellow
-*fading:        40
+urxvt*background:	#111111
+urxvt*foreground:	#babdb6
+urxvt*fadeColor:     #002b36
+urxvt*cursorColor:   green
+urxvt*underlineColor:    yellow
+urxvt*fading:        40
 
 ! Black
 *color0:    #000000
