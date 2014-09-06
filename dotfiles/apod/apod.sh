@@ -55,7 +55,7 @@ convert -extent "${WIDTH}x${HEIGHT}" -background none -gravity South candh-tmp1.
 composite -gravity South candh-tmp2.png apod.png apod.png
 
 if $(xdpyinfo > /dev/null 2>&1); then
-	[ "$(w | grep xmonad)" ] && feh --bg-center apod.png
+	feh --bg-max apod.png
 	log "Success"
 else
 	log "Success (No update)"

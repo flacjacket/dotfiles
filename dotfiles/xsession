@@ -1,0 +1,7 @@
+#!/bin/sh
+
+xscreensaver -no-splash &
+ipython notebook --profile=nbserver &
+xsetroot -cursor_name left_ptr
+
+exec qtile-session -c $HOME/.qtile/config.py
