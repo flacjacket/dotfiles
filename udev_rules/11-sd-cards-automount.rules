@@ -1,0 +1,11 @@
+KERNEL!="mmcblk[0-9]p[0-9]", GOTO="sd_cards_automount_end"
+ACTION=="add", PROGRAM!="/sbin/blkid %N", GOTO="sd_cards_automount_end"
+
+PROGRAM=="/sbin/blkid -o value -s LABEL %N", ENV{dir_name}="%c"
+PROGRAM=="/usr/bin/basename '%E{dir_name}'", ENV{dir_name}="%c"
+ENV{dir_name}=="", ENV{dir_name}="sdcard-%k"
+
+ACTION=="add", ENV{dir_name}!="", RUN+="/bin/su sean -c '/usr/bin/pmount %N %E{dir_name}'"
+ACTION=="remove", ENV{dir_name}!="", RUN+="/bin/su sean -c '/usr/bin/pumount /media/%E{dir_name}"
+
+LABEL="sd_cards_automount_end"

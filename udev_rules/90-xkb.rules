@@ -1,0 +1,2 @@
+ENV{ID_INPUT_KEYBOARD}=="?*", ENV{x11_driver}="evdev", ENV{xkblayout}="dvorak,us"
+ENV{xkboptions}="grp:alt_shift_toggle,terminate:ctrl_alt_bksp"

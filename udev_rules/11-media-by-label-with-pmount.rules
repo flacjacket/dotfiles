@@ -1,0 +1,11 @@
+KERNEL!="sd[a-z][0-9]", GOTO="media_by_label_end"
+ACTION=="add", PROGRAM!="/sbin/blkid %N", GOTO="media_by_label_end"
+
+PROGRAM=="/sbin/blkid -o value -s LABEL %N", ENV{dir_name}="%c"
+PROGRAM=="/usr/bin/basename '%E{dir_name}'", ENV{dir_name}="%c"
+ENV{dir_name}=="", ENV{dir_name}="usbhd-%k"
+
+ACTION=="add", ENV{dir_name}!="", RUN+="/bin/su sean -c '/usr/bin/pmount %N %E{dir_name}"
+ACTION=="remove", ENV{dir_name}!="", RUN+="/bin/su sean -c '/usr/bin/pumount /media/%E{dir_name}'"
+
+LABEL="media_by_label_end"
