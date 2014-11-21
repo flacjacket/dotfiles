@@ -2,7 +2,7 @@
 
 import os
 import socket
-import psutil
+#import psutil
 
 from libqtile.config import Key, Screen, Group, Drag, Click, Rule, Match
 from libqtile.command import lazy
@@ -13,12 +13,19 @@ from resize import resize
 
 from subprocess import call
 
+@hook.subscribe.startup_once
+def start_once():
+    resize()
+    call(['feh', '--bg-max', '/home/sean/.apod/apod.png'])
+
 @hook.subscribe.screen_change
 def restart_on_randr(qtile, ev):
     qtile.cmd_restart()
 
 @hook.subscribe.client_new
 def dialogs(window):
+    if window.window.get_name() == 'MPlayer':
+        window.floating = True
     if window.window.get_wm_type() == 'dialog' or window.window.get_wm_transient_for():
         window.floating = True
     if window.window.get_wm_class() == 'Xephyr':
