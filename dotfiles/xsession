@@ -2,6 +2,5 @@
 
 xscreensaver -no-splash &
 ipython notebook --profile=nbserver &
-xsetroot -cursor_name left_ptr
 
 exec qtile -c $HOME/.qtile/config.py

@@ -51,4 +51,8 @@ require(["nbextensions/toc"], function (toc) {
     toc.load_extension();
 });
 
+$([IPython.events]).on('app_initialized.NotebookApp', function(){
+    require(['nbextensions/hide_input_all'])
+});
+
 $([IPython.events]).on("notebook_loaded.Notebook", toc.table_of_contents);

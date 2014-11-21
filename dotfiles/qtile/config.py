@@ -17,6 +17,7 @@ from subprocess import call
 def start_once():
     resize()
     call(['feh', '--bg-max', '/home/sean/.apod/apod.png'])
+    call(['xsetroot', '-cursor_name', 'left_ptr'])
 
 @hook.subscribe.screen_change
 def restart_on_randr(qtile, ev):
