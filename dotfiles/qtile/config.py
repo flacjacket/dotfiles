@@ -2,7 +2,6 @@
 
 import os
 import socket
-#import psutil
 
 from libqtile.config import Key, Screen, Group, Drag, Click, Match
 from libqtile.command import lazy
@@ -13,28 +12,32 @@ from resize import resize
 
 from subprocess import call
 
+
 @hook.subscribe.startup_once
 def start_once():
     resize()
     call(['feh', '--bg-max', '/home/sean/.apod/apod.png'])
     call(['xsetroot', '-cursor_name', 'left_ptr'])
 
+
 @hook.subscribe.screen_change
 def restart_on_randr(qtile, ev):
     qtile.cmd_restart()
 
+
 @hook.subscribe.client_new
 def dialogs(window):
-    if window.window.get_name() == 'MPlayer':
+    if window.window.get_name() == 'MPlayer' or \
+            window.window.get_wm_type() == 'dialog' or \
+            window.window.get_wm_transient_for() or \
+            window.window.get_wm_class() == 'Xephyr':
         window.floating = True
-    if window.window.get_wm_type() == 'dialog' or window.window.get_wm_transient_for():
-        window.floating = True
-    if window.window.get_wm_class() == 'Xephyr':
-        window.floating = True
+
 
 @hook.subscribe.startup
 def startup_calls():
     call(['feh', '--bg-max', '/home/sean/.apod/apod.png'])
+
 
 mod = "mod4"
 alt = "mod1"
@@ -89,37 +92,39 @@ keys = [
     Key([], "XF86AudioMute", lazy.spawn("/home/sean/.qtile/volume.sh mute")),
     Key([], "XF86AudioLowerVolume", lazy.spawn("/home/sean/.qtile/volume.sh down")),
     Key([], "XF86AudioRaiseVolume", lazy.spawn("/home/sean/.qtile/volume.sh up"))
-    #Key([], "XF86MicMute", lazy.spawn("/home/sean/.qtile/volume.sh mic")),
+    # Key([], "XF86MicMute", lazy.spawn("/home/sean/.qtile/volume.sh mic")),
 ]
 
 # Drag floating layouts.
 mouse = [
     Drag([mod], "Button1", lazy.window.set_position_floating(),
-        start=lazy.window.get_position()),
+         start=lazy.window.get_position()),
     Drag([mod], "Button3", lazy.window.set_size_floating(),
-        start=lazy.window.get_size()),
+         start=lazy.window.get_size()),
     Click([mod], "Button2", lazy.window.bring_to_front())
 ]
 
 groups = [Group("%d" % (n+1)) for n in range(5)]
 
 groups.append(
-    Group('Xephyr', init=False,
-        matches=[Match(wm_class=['Xephyr'])],
-    )
+    Group('Xephyr', init=False, matches=[Match(wm_class=['Xephyr'])])
 )
 
 dgroups_key_binder = simple_key_binder(mod)
 dgroups_app_rules = []
 
 layouts = [
-    layout.MonadTall(border_focus="#a0a0d0", border_normal="#202030", border_width=1),
+    layout.MonadTall(
+        border_focus="#a0a0d0", border_normal="#202030", border_width=1
+    ),
     layout.Max()
 ]
 
-colors = [["#7cfcff", "#00afff"], # cyan gradiant
-          ["#656565", "#323335"], # grey gradiant
-          ["#040404", "#292929"]] # darker grey gradiant
+colors = [
+    ["#7cfcff", "#00afff"],  # cyan gradiant
+    ["#656565", "#323335"],  # grey gradiant
+    ["#040404", "#292929"]   # darker grey gradiant
+]
 
 widget_defaults = dict(
     font="DejaVu",
@@ -128,42 +133,44 @@ widget_defaults = dict(
 
 prompt = "{0}@{1}: ".format(os.environ["USER"], socket.gethostname())
 
+widgets1 = [
+    widget.Prompt(prompt=prompt, padding=10,
+                  background=colors[1]),
+    widget.TextBox(text=u"\u25e4 ", fontsize=42, padding=-8,
+                   foreground=colors[1], background=colors[2]),
+    widget.GroupBox(fontsize=8, padding=4, borderwidth=1),
+    widget.TextBox(text=u"\u25e4", fontsize=42, padding=-1,
+                   foreground=colors[2], background=colors[1]),
+    widget.TaskList(borderwidth=1, background=colors[1],
+                    border=colors[0], urgent_border=colors[0]),
+    widget.TextBox(text=u"\u25e4 ", fontsize=42, padding=-8,
+                   foreground=colors[1], background=colors[2]),
+    # widget.TextBox(text=u'\U0001f321'),
+    widget.Systray(),
+    widget.Volume(font="Symbola", emoji=True, fontsize=14),
+    widget.Clock('%m-%d-%Y %a %H:%M:%S'),
+]
+
+widgets2 = [
+    widget.TextBox(text="◤ ", fontsize=42, padding=-8,
+                   foreground=colors[1], background=colors[2]),
+    widget.GroupBox(fontsize=9, padding=4, borderwidth=1),
+    widget.TextBox(text="◤", fontsize=42, padding=-1,
+                   foreground=colors[2], background=colors[1]),
+    widget.TaskList(borderwidth=1, background=colors[1],
+                    border=colors[0], urgent_border=colors[0]),
+    widget.TextBox(text="◤ ", fontsize=42, padding=-8,
+                   foreground=colors[1], background=colors[2]),
+    widget.Volume(font="Symbola", emoji=True, fontsize=14),
+    widget.Clock('%m-%d-%Y %a %H:%M:%S')
+]
+
+if os.path.exists('/sys/class/powersupply/BAT0'):
+    widgets1.append(widget.Battery())
+
 screens = [
-    Screen(
-        top=bar.Bar([
-            widget.Prompt(prompt=prompt, padding=10,
-                background=colors[1]),
-            widget.TextBox(text=u"\u25e4 ", fontsize=42, padding=-8,
-                foreground=colors[1], background=colors[2]),
-            widget.GroupBox(fontsize=8, padding=4, borderwidth=1),
-            widget.TextBox(text=u"\u25e4", fontsize=42, padding=-1,
-                foreground=colors[2], background=colors[1]),
-            widget.TaskList(borderwidth=1, background=colors[1],
-                border=colors[0], urgent_border=colors[0]),
-            widget.TextBox(text=u"\u25e4 ", fontsize=42, padding=-8,
-                foreground=colors[1], background=colors[2]),
-            #widget.TextBox(text=u'\U0001f321'),
-            widget.Systray(),
-            widget.Volume(font="Symbola", emoji=True, fontsize=14),
-            widget.Clock('%m-%d-%Y %a %H:%M:%S'),
-            widget.Battery()
-        ], size=23),
-    ),
-    Screen(
-        top=bar.Bar([
-            widget.TextBox(text="◤ ", fontsize=42, padding=-8,
-                foreground=colors[1], background=colors[2]),
-            widget.GroupBox(fontsize=9, padding=4, borderwidth=1),
-            widget.TextBox(text="◤", fontsize=42, padding=-1,
-                foreground=colors[2], background=colors[1]),
-            widget.TaskList(borderwidth=1, background=colors[1],
-                border=colors[0], urgent_border=colors[0]),
-            widget.TextBox(text="◤ ", fontsize=42, padding=-8,
-                foreground=colors[1], background=colors[2]),
-            widget.Volume(font="Symbola", emoji=True, fontsize=14),
-            widget.Clock('%m-%d-%Y %a %H:%M:%S')
-        ], size=23)
-    )
+    Screen(top=bar.Bar(widgets1, size=23)),
+    Screen(top=bar.Bar(widgets2, size=23))
 ]
 
 follow_mouse_focus = True
