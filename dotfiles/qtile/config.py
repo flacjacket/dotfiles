@@ -4,7 +4,7 @@ import os
 import socket
 #import psutil
 
-from libqtile.config import Key, Screen, Group, Drag, Click, Rule, Match
+from libqtile.config import Key, Screen, Group, Drag, Click, Match
 from libqtile.command import lazy
 from libqtile.dgroups import simple_key_binder
 from libqtile import layout, bar, widget, hook
