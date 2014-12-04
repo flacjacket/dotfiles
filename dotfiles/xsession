@@ -2,5 +2,6 @@
 
 xscreensaver -no-splash &
 ipython notebook --profile=nbserver &
+dropbox &
 
 exec qtile -c $HOME/.qtile/config.py
