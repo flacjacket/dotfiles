@@ -6,7 +6,7 @@ import subprocess
 def resize(primary=None, primary_mode=None,
         secondary=None, secondary_mode=None, secondary_location="--right-of",
         toggle=False, clone=False):
-    screeninfo = subprocess.check_output(['xrandr', '-d', ':0.0']).decode()
+    screeninfo = subprocess.check_output(['xrandr']).decode()
     screens = sorted(re.findall("(\w+) connected", screeninfo))
 
     # this is an odd case...
