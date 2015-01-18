@@ -47,13 +47,8 @@
  * @static
  */
 
-require(["nbextensions/toc"], function (toc) {
-    console.log('Table of Contents extension loaded');
-    toc.load_extension();
-});
+IPython.load_extensions('toc');
 
 $([IPython.events]).on('app_initialized.NotebookApp', function(){
     require(['nbextensions/hide_input_all']);
 });
-
-$([IPython.events]).on("notebook_loaded.Notebook", toc.table_of_contents);
