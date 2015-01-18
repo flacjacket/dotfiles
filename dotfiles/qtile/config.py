@@ -9,6 +9,9 @@ from libqtile.dgroups import simple_key_binder
 from libqtile import layout, bar, widget, hook
 
 from resize import resize
+import battery
+import networkmonitor
+import volume
 
 from subprocess import call
 
@@ -18,10 +21,12 @@ def start_once():
     resize()
     call(['feh', '--bg-max', '/home/sean/.apod/apod.png'])
     call(['xsetroot', '-cursor_name', 'left_ptr'])
+    call(['dropbox'])
 
 
 @hook.subscribe.screen_change
 def restart_on_randr(qtile, ev):
+    resize()
     qtile.cmd_restart()
 
 
@@ -147,8 +152,9 @@ widgets1 = [
                    foreground=colors[1], background=colors[2]),
     # widget.TextBox(text=u'\U0001f321'),
     widget.Systray(),
-    widget.Volume(font="Symbola", emoji=True, fontsize=14),
     widget.Clock('%m-%d-%Y %a %H:%M:%S'),
+    networkmonitor.NetworkMonitor(),
+    volume.Volume(),
 ]
 
 widgets2 = [
@@ -161,12 +167,13 @@ widgets2 = [
                     border=colors[0], urgent_border=colors[0]),
     widget.TextBox(text="◤ ", fontsize=42, padding=-8,
                    foreground=colors[1], background=colors[2]),
-    widget.Volume(font="Symbola", emoji=True, fontsize=14),
-    widget.Clock('%m-%d-%Y %a %H:%M:%S')
+    widget.Clock('%m-%d-%Y %a %H:%M:%S'),
+    networkmonitor.NetworkMonitor(),
+    volume.Volume(),
 ]
 
-if os.path.exists('/sys/class/powersupply/BAT0'):
-    widgets1.append(widget.Battery())
+if os.path.exists('/sys/class/power_supply/BAT0'):
+    widgets1.insert(-1, battery.Battery())
 
 screens = [
     Screen(top=bar.Bar(widgets1, size=23)),
