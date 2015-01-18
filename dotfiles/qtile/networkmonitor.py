@@ -535,7 +535,7 @@ class NetworkMonitor(IconTextBox):
 
         try:
             c = list(scan.Cell.all(iface))[0]
-        except scan.InterfaceError:
+        except (scan.InterfaceError, FileNotFoundError):
             self.iface = WIRED_IFACE
             gen_icon = [WIRED_IFACE, ]
         else:
