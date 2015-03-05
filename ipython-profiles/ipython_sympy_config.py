@@ -4,11 +4,10 @@ c = get_config()
 app = c.InteractiveShellApp
 
 lines = """\
-from __future__ import division
-from sympy import *
-x, y, z, t = symbols('x y z t')
-k, m, n = symbols('k m n', integer=True)
-f, g, h = symbols('f g h', cls=Function)
+import sympy as sym
+x, y, z, t = sym.symbols('x y z t')
+k, m, n = sym.symbols('k m n', integer=True)
+f, g, h = sym.symbols('f g h', cls=Function)
 """
 app.exec_lines.append(lines)
 

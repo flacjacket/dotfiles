@@ -22,8 +22,9 @@ app.exec_lines.append('import numpy as np')
 app.exec_lines.append('import scipy as sp')
 app.exec_lines.append('import pandas as pd')
 app.exec_lines.append('import matplotlib.pyplot as plt')
-app.exec_lines.append('from curve_fitting import *')
-app.exec_lines.append('from spec import *')
+app.exec_lines.append('import matplotlib as mpl')
+app.exec_lines.append('from curve_fitting import gaussian, lorentzian')
+app.exec_lines.append('from spec import read_data, read_larry')
 
 if os.name == 'nt':
     c.IPythonWidget.font_family = 'DejaVu Sans Mono'
