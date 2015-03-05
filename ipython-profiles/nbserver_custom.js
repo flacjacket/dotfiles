@@ -47,8 +47,7 @@
  * @static
  */
 
-IPython.load_extensions('toc');
-
-$([IPython.events]).on('app_initialized.NotebookApp', function(){
-    require(['nbextensions/hide_input_all']);
+$([IPython.events]).on("app_initialized.NotebookApp", function () {
+    IPython.load_extensions("toc");
+    IPython.load_extensions("hide_input_all");
 });

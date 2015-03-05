@@ -10,17 +10,14 @@ nbdir = os.path.expanduser(nbdir)
 nbdir = os.path.normpath(nbdir)
 
 c = get_config()
-app = c.InteractiveShellApp
 
-load_subconfig('ipython_config.py', profile='labwork')
+#load_subconfig('ipython_config.py', profile='labwork')
 
 c.IPKernelApp.matplotlib = 'inline'
-
-c.NotebookManager.notebook_dir = nbdir
-c.NotebookManager.save_script = True
-
+c.NotebookApp.notebook_dir = nbdir
 c.NotebookApp.open_browser = False
 
+app = c.InteractiveShellApp
 app.exec_lines.append("nbdir = r'%s'" % nbdir)
 
 if os.name == 'nt':
