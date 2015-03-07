@@ -19,14 +19,13 @@ from subprocess import call
 @hook.subscribe.startup_once
 def start_once():
     resize()
-    call(['feh', '--bg-max', '/home/sean/.apod/apod.png'])
     call(['xsetroot', '-cursor_name', 'left_ptr'])
     call(['dropbox'])
 
 
 @hook.subscribe.screen_change
 def restart_on_randr(qtile, ev):
-    resize()
+    call(['feh', '--bg-max', '/home/sean/.apod/apod.png'])
     qtile.cmd_restart()
 
 
@@ -35,7 +34,8 @@ def dialogs(window):
     if window.window.get_name() == 'MPlayer' or \
             window.window.get_wm_type() == 'dialog' or \
             window.window.get_wm_transient_for() or \
-            window.window.get_wm_class() == 'Xephyr':
+            window.window.get_wm_class() == 'Xephyr' or \
+            window.window.get_wm_class() == 'Weston Compositor':
         window.floating = True
 
 
