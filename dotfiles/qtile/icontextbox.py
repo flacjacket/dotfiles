@@ -76,7 +76,7 @@ class IconTextBox(base._TextBox):
     def gen_icon(self, value, ctx):
         pass
 
-    def calculate_width(self):
+    def calculate_length(self):
         width = sum(self.icon_widths) + len(self.icon_widths) * self.actual_padding
 
         if self.text:
@@ -108,4 +108,4 @@ class IconTextBox(base._TextBox):
                 int(self.bar.height / 2 - self.layout.height / 2) + 1
             )
 
-        self.drawer.draw(self.offset, self.width)
+        self.drawer.draw(offsetx=self.offset, width=self.width)

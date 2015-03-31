@@ -32,6 +32,7 @@ def restart_on_randr(qtile, ev):
 @hook.subscribe.client_new
 def dialogs(window):
     if window.window.get_name() == 'MPlayer' or \
+            window.window.get_name() == 'Weston Compositor' or \
             window.window.get_wm_type() == 'dialog' or \
             window.window.get_wm_transient_for() or \
             window.window.get_wm_class() == 'Xephyr' or \
@@ -152,7 +153,7 @@ widgets1 = [
                    foreground=colors[1], background=colors[2]),
     # widget.TextBox(text=u'\U0001f321'),
     widget.Systray(),
-    widget.Clock('%m-%d-%Y %a %H:%M:%S'),
+    widget.Clock(format='%m-%d-%Y %a %H:%M:%S'),
     networkmonitor.NetworkMonitor(),
     volume.Volume(),
 ]
@@ -167,8 +168,8 @@ widgets2 = [
                     border=colors[0], urgent_border=colors[0]),
     widget.TextBox(text="◤ ", fontsize=42, padding=-8,
                    foreground=colors[1], background=colors[2]),
-    widget.Clock('%m-%d-%Y %a %H:%M:%S'),
     networkmonitor.NetworkMonitor(),
+    widget.Clock(format='%m-%d-%Y %a %H:%M:%S'),
     volume.Volume(),
 ]
 
