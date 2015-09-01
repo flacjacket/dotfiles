@@ -7,6 +7,7 @@ if [[ $- != *i* ]] ; then
     return
 fi
 
+# Launch tmux session
 if [[ -z "$TMUX"  && "x$TERM" == "xrxvt-256color" ]]; then
     tmux has-session 2>&1 &> /dev/null
     [[ $? -eq 0 ]] && exec tmux attach || exec tmux
@@ -48,30 +49,46 @@ vcs_info_wrapper() {
 RPROMPT=$'$(vcs_info_wrapper)'
 
 # Autocompletion
-
 autoload -U compinit
 compinit
+
+# setup key accordingly
+typeset -g -A key
+
+bindkey "${key[F1]}" '^[OP'
+bindkey "${key[F2]}" '^[OQ'
+bindkey "${key[F3]}" '^[OR'
+bindkey "${key[F4]}" '^[OS'
+bindkey "${key[F5]}" '^[[15~'
+bindkey "${key[F6]}" '^[[17~'
+bindkey "${key[F7]}" '^[[18~'
+bindkey "${key[F8]}" '^[[19~'
+bindkey "${key[F9]}" '^[[20~'
+bindkey "${key[F10]}" '^[[21~'
+bindkey "${key[F11]}" '^[[23~'
+bindkey "${key[F12]}" '^[[24~'
+
+bindkey "${key[Up]}" '^[[A'
+bindkey "${key[Left]}" '^[[D'
+bindkey "${key[Down]}" '^[[B'
+bindkey "${key[Right]}" '^[[C'
+bindkey "${key[Menu]}" ''''
+
+bindkey "${key[Backspace]}" backward-delete-char
+bindkey "${key[Home]}" beginning-of-line
+bindkey "${key[End]}" end-of-line
+bindkey "${key[Insert]}" overwrite-mode
+bindkey "${key[Delete]}" delete-char
+bindkey "${key[PageUp]}" beginning-of-buffer-or-history
+bindkey "${key[PageDown]}" end-of-buffer-or-history
+
+bindkey "^[${key[Backspace]}" backward-delete-word
+bindkey "^[${key[Left]}" backward-word
+bindkey "^[${key[Right]}" forward-word
 
 bindkey "^[b" backward-word
 bindkey "^[f" forward-word
 bindkey "^[d" backward-delete-word
-
-# setup key accordingly
-if [ -e ~/.zkbd/$TERM-${${DISPLAY:t}:-$VENDOR-$OSTYPE} ]; then
-    source ~/.zkbd/$TERM-${${DISPLAY:t}:-$VENDOR-$OSTYPE}
-
-    bindkey "${key[Backspace]}" backward-delete-char
-    bindkey "${key[Home]}" beginning-of-line
-    bindkey "${key[End]}" end-of-line
-    bindkey "${key[Insert]}" overwrite-mode
-    bindkey "${key[Delete]}" delete-char
-    bindkey "${key[PageUp]}" beginning-of-buffer-or-history
-    bindkey "${key[PageDown]}" end-of-buffer-or-history
-
-    bindkey "^[${key[Backspace]}" backward-delete-word
-    bindkey "^[${key[Left]}" backward-word
-    bindkey "^[${key[Right]}" forward-word
-fi
 
 # virtualenv wrapper
 export WORKON_HOME=~/.venvs
@@ -87,6 +104,16 @@ alias ls='ls --color=auto'
 alias grep='grep --colour=auto'
 alias egrep='egrep --colour=auto'
 alias fgrep='fgrep --colour=auto'
+
+# Enable history
+HISTFILE=~/.histfile
+HISTSIZE=10000
+SAVEHIST=10000
+
+setopt appendhistory
+setopt sharehistory
+setopt hist_ignore_dups
+setopt histignorespace
 
 # Finally, make sure the terminal is in application mode, when zle is
 # active. Only then are the values from $terminfo valid.
