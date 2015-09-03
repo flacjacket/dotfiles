@@ -5,7 +5,7 @@ c = get_config()
 import os
 import sys
 
-if os == 'nt':
+if os.name == 'nt':
     nbdir = 'D:/Dropbox/Notebooks'
 else:
     nbdir = '~/notebooks'
