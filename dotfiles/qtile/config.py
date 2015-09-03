@@ -20,7 +20,7 @@ from subprocess import call
 def start_once():
     resize()
     call(['xsetroot', '-cursor_name', 'left_ptr'])
-    call(['dropbox'])
+    #call(['dropbox'])
 
 
 @hook.subscribe.screen_change
@@ -35,7 +35,7 @@ def dialogs(window):
             window.window.get_name() == 'Weston Compositor' or \
             window.window.get_wm_type() == 'dialog' or \
             window.window.get_wm_transient_for() or \
-            window.window.get_wm_class() == 'Xephyr' or \
+            'Xephyr' in window.window.get_wm_class() or \
             window.window.get_wm_class() == 'Weston Compositor':
         window.floating = True
 
@@ -81,10 +81,11 @@ keys = [
     Key([mod], "r", lazy.spawncmd()),
 
     # Applications
-    Key([mod], "c", lazy.spawn("chromium")),
+    Key([mod], "c", lazy.spawn("firefox")),
     Key([mod], "l", lazy.spawn("clementine")),
     Key([mod], "Return", lazy.spawn("urxvt")),
-    Key([mod], "i", lazy.spawn("ipython qtconsole --profile labwork")),
+    # Key([mod], "i", lazy.spawn("ipython qtconsole --profile labwork")),
+    Key([mod], "i", lazy.spawn("jupyter qtconsole")),
     Key([mod, "shift"], "l", lazy.spawn("xscreensaver-command -lock")),
     Key([], "Print", lazy.spawn("scrot")),
 
@@ -95,9 +96,9 @@ keys = [
     Key([], "XF86AudioPlay", lazy.spawn("clementine --play-pause")),
     Key([], "XF86AudioNext", lazy.spawn("clementine --next")),
     Key([], "XF86AudioPrev", lazy.spawn("clementine --prev")),
-    Key([], "XF86AudioMute", lazy.spawn("/home/sean/.qtile/volume.sh mute")),
-    Key([], "XF86AudioLowerVolume", lazy.spawn("/home/sean/.qtile/volume.sh down")),
-    Key([], "XF86AudioRaiseVolume", lazy.spawn("/home/sean/.qtile/volume.sh up"))
+    Key([], "XF86AudioMute", lazy.spawn("/home/sean/.config/qtile/volume.sh mute")),
+    Key([], "XF86AudioLowerVolume", lazy.spawn("/home/sean/.config/qtile/volume.sh down")),
+    Key([], "XF86AudioRaiseVolume", lazy.spawn("/home/sean/.config/qtile/volume.sh up"))
     # Key([], "XF86MicMute", lazy.spawn("/home/sean/.qtile/volume.sh mic")),
 ]
 

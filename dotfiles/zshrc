@@ -7,6 +7,11 @@ if [[ $- != *i* ]] ; then
     return
 fi
 
+export ECHANGELOG_USER="Sean Vig <sean.v.775@gmail.com>"
+
+# pylearn2
+export PATH=$PATH:~/pylearn2/pylearn2/scripts
+
 # Launch tmux session
 if [[ -z "$TMUX"  && "x$TERM" == "xrxvt-256color" ]]; then
     tmux has-session 2>&1 &> /dev/null
@@ -55,24 +60,30 @@ compinit
 # setup key accordingly
 typeset -g -A key
 
-bindkey "${key[F1]}" '^[OP'
-bindkey "${key[F2]}" '^[OQ'
-bindkey "${key[F3]}" '^[OR'
-bindkey "${key[F4]}" '^[OS'
-bindkey "${key[F5]}" '^[[15~'
-bindkey "${key[F6]}" '^[[17~'
-bindkey "${key[F7]}" '^[[18~'
-bindkey "${key[F8]}" '^[[19~'
-bindkey "${key[F9]}" '^[[20~'
-bindkey "${key[F10]}" '^[[21~'
-bindkey "${key[F11]}" '^[[23~'
-bindkey "${key[F12]}" '^[[24~'
-
-bindkey "${key[Up]}" '^[[A'
-bindkey "${key[Left]}" '^[[D'
-bindkey "${key[Down]}" '^[[B'
-bindkey "${key[Right]}" '^[[C'
-bindkey "${key[Menu]}" ''''
+key[F1]='^[OP'
+key[F2]='^[OQ'
+key[F3]='^[OR'
+key[F4]='^[OS'
+key[F5]='^[[15~'
+key[F6]='^[[17~'
+key[F7]='^[[18~'
+key[F8]='^[[19~'
+key[F9]='^[[20~'
+key[F10]='^[[21~'
+key[F11]='^[[23~'
+key[F12]='^[[24~'
+key[Backspace]='^?'
+key[Insert]='^[[2~'
+key[Home]='^[[1~'
+key[PageUp]='^[[5~'
+key[Delete]='^[[3~'
+key[End]='^[[4~'
+key[PageDown]='^[[6~'
+key[Up]='^[[A'
+key[Left]='^[[D'
+key[Down]='^[[B'
+key[Right]='^[[C'
+key[Menu]=''''
 
 bindkey "${key[Backspace]}" backward-delete-char
 bindkey "${key[Home]}" beginning-of-line
@@ -104,6 +115,8 @@ alias ls='ls --color=auto'
 alias grep='grep --colour=auto'
 alias egrep='egrep --colour=auto'
 alias fgrep='fgrep --colour=auto'
+
+alias repo-commit='repoman commit --if-modified y -m'
 
 # Enable history
 HISTFILE=~/.histfile

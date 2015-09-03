@@ -1,6 +1,0 @@
-#!/bin/sh
-
-xscreensaver -no-splash &
-ipython notebook --profile=nbserver &
-
-exec qtile -c $HOME/.qtile/config.py
