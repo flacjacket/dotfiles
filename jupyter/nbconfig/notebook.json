@@ -1,5 +1,6 @@
 {
   "load_extensions": {
+    "livereveal/main": true,
     "toc": true,
     "hide_input_all": true
   }
