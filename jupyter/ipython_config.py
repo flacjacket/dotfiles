@@ -6,7 +6,5 @@ if os.name == "nt":
 c = get_config()
 app = c.InteractiveShellApp
 
-c.IPKernelApp.matplotlib = 'inline'
-
 app.extensions = ['autoreload']
 app.exec_lines.append('%autoreload 2')
