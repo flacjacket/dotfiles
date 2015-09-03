@@ -1,6 +1,6 @@
 {
   "load_extensions": {
-    "toc.js": true,
-    "hide_input_all.js": true
+    "toc": true,
+    "hide_input_all": true
   }
 }

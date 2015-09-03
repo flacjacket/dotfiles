@@ -5,8 +5,12 @@ c = get_config()
 import os
 import sys
 
-nbdir = 'D:/Dropbox/Notebooks'
+if os == 'nt':
+    nbdir = 'D:/Dropbox/Notebooks'
+else:
+    nbdir = '~/notebooks'
 
+nbdir = os.path.expanduser(nbdir)
 nbdir = os.path.abspath(nbdir)
 sys.path.append(nbdir)
 
@@ -62,10 +66,6 @@ sys.path.append(nbdir)
 #------------------------------------------------------------------------------
 
 # extra paths to look for Javascript notebook extensions
-from jupyter_core.paths import jupyter_data_dir
-c.NotebookApp.extra_nbextensions_path = [
-    jupyter_data_dir()
-]
 
 # Whether to open in a browser after starting. The specific browser used is
 # platform dependent and determined by the python standard library `webbrowser`
