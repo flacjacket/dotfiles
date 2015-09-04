@@ -12,7 +12,8 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work.  If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-__all__ = ['magma', 'inferno', 'plasma', 'viridis']
+__all__ = ['magma', 'inferno', 'plasma', 'viridis',
+           'magma_r', 'inferno_r', 'plasma_r', 'viridis_r']
 
 _magma_data = [[0.001462, 0.000466, 0.013866],
                [0.002258, 0.001295, 0.018331],
@@ -1051,8 +1052,14 @@ for (name, data) in (('magma', _magma_data),
                      ('viridis', _viridis_data)):
 
     cmaps[name] = ListedColormap(data, name=name)
+    cmaps[name + '_r'] = ListedColormap(data[::-1], name=name+'_r')
 
 magma = cmaps['magma']
 inferno = cmaps['inferno']
 plasma = cmaps['plasma']
 viridis = cmaps['viridis']
+
+magma_r = cmaps['magma_r']
+inferno_r = cmaps['inferno_r']
+plasma_r = cmaps['plasma_r']
+viridis_r = cmaps['viridis_r']
