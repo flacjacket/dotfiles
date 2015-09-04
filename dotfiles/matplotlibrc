@@ -399,7 +399,7 @@ savefig.dpi         : 150      # figure dots per inch
 #savefig.jpeg_quality: 95       # when a jpeg is saved, the default quality parameter.
 #savefig.directory   : ~        # default directory in savefig dialog box,
                                 # leave empty to always use current working directory
-savefig.transparent : True    # setting that controls whether figures are saved with a
+#savefig.transparent : False    # setting that controls whether figures are saved with a
                                 # transparent background by default
 
 # tk backend params
