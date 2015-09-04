@@ -17,14 +17,22 @@ sys.path.append(nbdir)
 
 # Let's fix jet even before matplotlib 2.0
 mpl.cm.cmap_d["inferno"] = inferno
+mpl.cm.cmap_d["inferno_r"] = inferno_r
 mpl.cm.cmap_d["magma"] = magma
+mpl.cm.cmap_d["magma_r"] = magma_r
 mpl.cm.cmap_d["plasma"] = plasma
+mpl.cm.cmap_d["plasma_r"] = plasma_r
 mpl.cm.cmap_d["viridis"] = viridis
+mpl.cm.cmap_d["viridis_r"] = viridis_r
 
 mpl.cm.inferno = inferno
+mpl.cm.inferno_r = inferno_r
 mpl.cm.magma = magma
+mpl.cm.magma_r = magma_r
 mpl.cm.plasma = plasma
+mpl.cm.plasma_r = plasma_r
 mpl.cm.viridis = viridis
+mpl.cm.viridis_r = viridis_r
 
 mpl.rcParams["image.cmap"] = "viridis"
 
