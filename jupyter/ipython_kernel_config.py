@@ -46,6 +46,7 @@ c = get_config()
 app = c.IPKernelApp
 
 app.matplotlib = "inline"
+c.InlineBackend.rc = {'figure.dpi': 80, 'figure.facecolor': 'white'}
 
 app.exec_lines.append("import numpy as np")
 app.exec_lines.append("import scipy as sp")
