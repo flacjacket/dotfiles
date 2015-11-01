@@ -1,4 +1,4 @@
-from networkmonitor_icons import wired_icon, wifi_icon, noconn_icon, vpn_icon
+from networkmonitor_icons import wired_icon, wifi_icon, noconn_icon, vpn_icon, usb_icon
 
 from enum import Enum
 from icontextbox import IconTextBox
@@ -10,8 +10,8 @@ import re
 
 vpn_iface = 'tun0'
 
-Iface = Enum('Iface', 'no_conn wired wifi vpn')
-
+Iface = Enum('Iface', 'no_conn wired wifi vpn usb')
+usb_iface = 'usb'
 
 
 class NetworkMonitor(IconTextBox):
@@ -25,6 +25,8 @@ class NetworkMonitor(IconTextBox):
             return 2048, 2500
         elif self.iface == Iface.wired:
             return 430, 400
+        elif self.iface == Iface.usb:
+            return 355, 275
         else:
             return 0, 0
 
@@ -36,11 +38,15 @@ class NetworkMonitor(IconTextBox):
             self.iface = Iface.no_conn
             return [[Iface.no_conn]], ''
 
+        text = ''
         try:
             c = list(scan.Cell.all(iface))[0]
         except (scan.InterfaceError, FileNotFoundError):
-            self.iface = Iface.wired
-            gen_icon = [Iface.wired, ]
+            if iface[:3] == usb_iface:
+                self.iface = Iface.usb
+            else:
+                self.iface = usb_iface
+            gen_icon = [self.iface]
         else:
             quality = int(re.match(r"(\d+)/\d+", c.quality).group(1))
             if quality >= 53:
@@ -51,6 +57,7 @@ class NetworkMonitor(IconTextBox):
                 wifi_quality = 2
             else:
                 wifi_quality = 1
+            text = c.ssid
 
             # if c.encrypted and c.encryption_type != 'wep':
             #     pass
@@ -59,14 +66,13 @@ class NetworkMonitor(IconTextBox):
 
             self.iface = Iface.wifi
             gen_icon = [Iface.wifi, wifi_quality]
-
         try:
             if netifaces.AF_INET in netifaces.ifaddresses(vpn_iface):
                 gen_icon.append(Iface.vpn)
         except ValueError:
             pass
 
-        return [gen_icon], ''
+        return [gen_icon], text
 
     def gen_icon(self, value, ctx):
         try:
@@ -76,17 +82,12 @@ class NetworkMonitor(IconTextBox):
 
         if value[-1] == Iface.vpn:
             vpn_icon(ctx)
-            # ctx.set_source_rgba(0, 0, 0, 0)
-            # x, y = self.icon_size
-            # ctx.move_to(x, y)
-            # ctx.rectangle(0, 0, x, y)
-            # ctx.rectangle(0, 0, x, y/2)
-            # ctx.clip()
-            # ctx.new_path()
         elif iface == Iface.wired:
             wired_icon(ctx)
         elif iface == Iface.wifi:
             quality = value[1]
             wifi_icon(ctx, quality)
+        elif iface == Iface.usb:
+            usb_icon(ctx)
         else:
             noconn_icon(ctx)

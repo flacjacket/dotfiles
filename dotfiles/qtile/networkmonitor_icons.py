@@ -1,4 +1,10 @@
-from math import pi
+import cairocffi
+from math import sin, cos, atan2, pi
+
+
+def usb_icon(ctx):
+    ctx.set_source_rgb(1, 1, 1)
+    _strike_usb(ctx)
 
 
 def wired_icon(ctx):
@@ -29,6 +35,16 @@ def vpn_icon(ctx):
     _strike_shield(ctx)
 
 
+def _rotate(x, y, angle):
+    """Rotate a point of an angle around the origin point."""
+    return x * cos(angle) - y * sin(angle), y * cos(angle) + x * sin(angle)
+
+
+def _point_angle(cx, cy, px, py):
+    """Return angle between x axis and point knowing given center."""
+    return atan2(py - cy, px - cx)
+
+
 def _quadratic_points(x1, y1, x2, y2, x3, y3):
     """Return the quadratic points to create quadratic curves."""
     xq1 = x2 * 2 / 3 + x1 / 3
@@ -36,6 +52,52 @@ def _quadratic_points(x1, y1, x2, y2, x3, y3):
     xq2 = x2 * 2 / 3 + x3 / 3
     yq2 = y2 * 2 / 3 + y3 / 3
     return xq1, yq1, xq2, yq2, x3, y3
+
+
+def _elliptic_curve(ctx, rx, ry, rotation, large, sweep, x3, y3):
+    x1, y1 = ctx.get_current_point()
+    radii_ratio = ry / rx
+
+    # Cancel the rotation of the second point
+    xe, ye = _rotate(x3, y3, -rotation)
+    ye /= radii_ratio
+
+    # Find the angle between the second point and the x axis
+    angle = _point_angle(0, 0, xe, ye)
+
+    # Put the second point onto the x axis
+    xe = (xe ** 2 + ye ** 2) ** .5
+    ye = 0
+
+    # Update the x radius if it is too small
+    rx = max(rx, xe / 2)
+
+    # Find one circle centre
+    xc = xe / 2
+    yc = (rx ** 2 - xc ** 2) ** .5
+
+    # Choose between the two circles according to flags
+    if not (large ^ sweep):
+        yc = -yc
+
+    # Define the arc sweep
+    arc = (ctx.arc if sweep else ctx.arc_negative)
+
+    # Put the second point and the center back to their positions
+    xe, ye = _rotate(xe, 0, angle)
+    xc, yc = _rotate(xc, yc, angle)
+
+    # Find the drawing angles
+    angle1 = _point_angle(xc, yc, 0, 0)
+    angle2 = _point_angle(xc, yc, xe, ye)
+
+    # Draw the arc
+    ctx.save()
+    ctx.translate(x1, y1)
+    ctx.rotate(rotation)
+    ctx.scale(1, radii_ratio)
+    arc(xc, yc, rx, angle1, angle2)
+    ctx.restore()
 
 
 def _strike_wired(ctx):
@@ -76,6 +138,80 @@ def _strike_wired(ctx):
     ctx.rel_line_to(0, -60)
     ctx.close_path()
     ctx.fill_preserve()
+
+
+def _strike_usb(ctx):
+    #matrix = cairocffi.Matrix(0, -1, 1, 0, 8.5712985, 353.92249)
+    #ctx.transform(matrix)
+
+    # rectangle
+    ctx.rectangle(226.23077, 198.17175, 34.054432, 33.971706)
+    ctx.fill()
+
+    matrix = cairocffi.Matrix(1.027502, 0, 0, 1.027502, 3.164391, 82.27125)
+    ctx.transform(matrix)
+    # m 92.57172,87.795685
+    ctx.move_to(92.57172, 87.795685)
+    # a 24.204533,24.204533 0 1 1 -48.409065,0 24.204533,24.204533 0 1 1 48.409065,0
+    _elliptic_curve(ctx, 24.204533, 24.204533, 0, True, True, -48.409065, 0)
+    _elliptic_curve(ctx, 24.204533, 24.204533, 0, True, True, 48.409065, 0)
+    # z
+    ctx.close_path()
+    matrix.invert()
+    ctx.transform(matrix)
+
+    matrix = cairocffi.Matrix(0.683726,0,0,0.683726,157.7966,69.64945)
+    ctx.transform(matrix)
+    # m 92.57172,87.795685
+    ctx.move_to(92.57172, 87.795685)
+    # a 24.204533,24.204533 0 1 1 -48.409065,0 24.204533,24.204533 0 1 1 48.409065,0
+    _elliptic_curve(ctx, 24.204533, 24.204533, 0, True, True, -48.409065, 0)
+    _elliptic_curve(ctx, 24.204533, 24.204533, 0, True, True, 48.409065, 0)
+    # z
+    ctx.close_path()
+    matrix.invert()
+    ctx.transform(matrix)
+
+    # m 280.71527,156.68252
+    ctx.move_to(280.71527, 156.68252)
+    # c 0,0 33.7386,15.4741 33.23125,15.85461
+    ctx.rel_line_to(33.23125, 15.85461)
+    # c -0.50734,0.38051 -33.23125,15.34727 -33.23125,15.34727
+    ctx.rel_line_to(-33.23125, 15.34727)
+    # l 0,-31.20188
+    ctx.rel_line_to(0, -31.20188)
+    # z
+    ctx.close_path()
+
+    # FILL
+    ctx.fill()
+
+    # m 105.26052,171.85683
+    ctx.move_to(105.26052, 171.85683)
+    # c 29.11504,-2.74237 43.80379,-42.36574 60.69526,-42.36574
+    ctx.rel_curve_to(29.11504, -2.74237, 43.80379, -42.36574, 60.69526, -42.36574)
+    # c 11.42079,0 16.41714,0.52924 30.94969,0.52924
+    ctx.rel_curve_to(11.42079, 0, 16.41714, 0.52924, 30.94969, 0.52924)
+
+    # m 139.78853,172.06998
+    ctx.move_to(139.78853, 172.06998)
+    # c 30.07966,0 37.16402,28.45664 59.41407,42.56265
+    ctx.rel_curve_to(30.07966, 0, 37.16402, 28.45664, 59.41407, 42.56265)
+    # c 3.77011,2.15435 37.77275,0.75371 39.94619,0.75371
+    ctx.rel_curve_to(3.77011, 2.15435, 37.77275, 0.75371, 39.94619, 0.75371)
+
+    # m 74.032648,171.98191 215.131262,0
+    ctx.move_to(74.032648, 171.98191)
+    ctx.rel_line_to(215.131262, 0)
+
+    # STROKE
+    ctx.set_line_width(9.56692886)
+    ctx.stroke()
+
+    # m 139.78853,172.06998 c 30.07966,0 37.16402,28.45664 59.41407,42.56265 3.77011,2.15435 37.77275,0.75371 39.94619,0.75371
+
+    # m 74.032648,171.98191 215.131262,0
+
 
 
 def _strike_wifi1(ctx):

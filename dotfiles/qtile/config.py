@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import os
 import socket
 
@@ -15,6 +13,9 @@ import volume
 
 from subprocess import call
 
+float_name = ('MPlayer',)
+float_class = ('Xephyr', 'Weston Compositor', 'BLHeliSuite.exe', 'MW_OSD_GUI')
+
 
 @hook.subscribe.startup_once
 def start_once():
@@ -26,17 +27,12 @@ def start_once():
 @hook.subscribe.screen_change
 def restart_on_randr(qtile, ev):
     call(['feh', '--bg-max', '/home/sean/.apod/apod.png'])
-    qtile.cmd_restart()
+    #qtile.cmd_restart()
 
 
 @hook.subscribe.client_new
 def dialogs(window):
-    if window.window.get_name() == 'MPlayer' or \
-            window.window.get_name() == 'Weston Compositor' or \
-            window.window.get_wm_type() == 'dialog' or \
-            window.window.get_wm_transient_for() or \
-            'Xephyr' in window.window.get_wm_class() or \
-            window.window.get_wm_class() == 'Weston Compositor':
+    if window.window.get_name() in float_name or set(float_class).intersection(set(window.window.get_wm_class())) or window.window.get_wm_transient_for():
         window.floating = True
 
 
@@ -145,7 +141,8 @@ widgets1 = [
                   background=colors[1]),
     widget.TextBox(text=u"\u25e4 ", fontsize=42, padding=-8,
                    foreground=colors[1], background=colors[2]),
-    widget.GroupBox(fontsize=8, padding=4, borderwidth=1),
+    widget.GroupBox(fontsize=8, padding=4, borderwidth=1), #, highlight_method='line',
+                    #background_color=colors[2], highlight_color=colors[1][::-1], line_thickness=3),
     widget.TextBox(text=u"\u25e4", fontsize=42, padding=-1,
                    foreground=colors[2], background=colors[1]),
     widget.TaskList(borderwidth=1, background=colors[1],
@@ -160,14 +157,14 @@ widgets1 = [
 ]
 
 widgets2 = [
-    widget.TextBox(text="◤ ", fontsize=42, padding=-8,
+    widget.TextBox(text="\u25e4 ", fontsize=42, padding=-8,
                    foreground=colors[1], background=colors[2]),
     widget.GroupBox(fontsize=9, padding=4, borderwidth=1),
-    widget.TextBox(text="◤", fontsize=42, padding=-1,
+    widget.TextBox(text="\u25e4", fontsize=42, padding=-1,
                    foreground=colors[2], background=colors[1]),
     widget.TaskList(borderwidth=1, background=colors[1],
                     border=colors[0], urgent_border=colors[0]),
-    widget.TextBox(text="◤ ", fontsize=42, padding=-8,
+    widget.TextBox(text="\u25e4 ", fontsize=42, padding=-8,
                    foreground=colors[1], background=colors[2]),
     networkmonitor.NetworkMonitor(),
     widget.Clock(format='%m-%d-%Y %a %H:%M:%S'),
