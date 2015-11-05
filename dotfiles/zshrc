@@ -10,7 +10,7 @@ fi
 export ECHANGELOG_USER="Sean Vig <sean.v.775@gmail.com>"
 
 # pylearn2
-export PATH=$PATH:~/pylearn2/pylearn2/scripts
+export PATH=$PATH:~/.local/bin
 
 # Launch tmux session
 if [[ -z "$TMUX"  && "x$TERM" == "xrxvt-256color" ]]; then
