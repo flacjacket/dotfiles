@@ -27,7 +27,7 @@ def start_once():
 @hook.subscribe.screen_change
 def restart_on_randr(qtile, ev):
     call(['feh', '--bg-max', '/home/sean/.apod/apod.png'])
-    #qtile.cmd_restart()
+    qtile.cmd_restart()
 
 
 @hook.subscribe.client_new

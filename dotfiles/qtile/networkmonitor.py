@@ -45,7 +45,7 @@ class NetworkMonitor(IconTextBox):
             if iface[:3] == usb_iface:
                 self.iface = Iface.usb
             else:
-                self.iface = usb_iface
+                self.iface = Iface.wired
             gen_icon = [self.iface]
         else:
             quality = int(re.match(r"(\d+)/\d+", c.quality).group(1))
