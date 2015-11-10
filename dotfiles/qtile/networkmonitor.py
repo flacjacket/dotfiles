@@ -8,8 +8,6 @@ import netifaces
 import re
 
 
-vpn_iface = 'tun0'
-
 Iface = Enum('Iface', 'no_conn wired wifi vpn usb')
 usb_iface = 'usb'
 
@@ -21,7 +19,7 @@ class NetworkMonitor(IconTextBox):
 
     @property
     def icon_size(self):
-        if self.iface in (Iface.wifi, Iface.no_conn):
+        if self.iface in (Iface.wifi, Iface.no_conn, Iface.vpn):
             return 2048, 2500
         elif self.iface == Iface.wired:
             return 430, 400
@@ -32,9 +30,23 @@ class NetworkMonitor(IconTextBox):
 
     def poll(self):
         gws = netifaces.gateways()
+
         try:
+            # Try to figure out if we're connected normally
             iface = gws['default'][netifaces.AF_INET][1]
         except (IndexError, KeyError):
+            # We might be on a VPN
+            for iface in netifaces.interfaces():
+                if iface == 'lo':
+                    continue
+                adr = netifaces.ifaddresses(iface)
+                try:
+                    adr[netifaces.AF_INET][0]['peer']
+                    self.iface = Iface.vpn
+                    return [[Iface.vpn]], iface
+                except (KeyError, IndexError):
+                    pass
+
             self.iface = Iface.no_conn
             return [[Iface.no_conn]], ''
 
@@ -66,11 +78,6 @@ class NetworkMonitor(IconTextBox):
 
             self.iface = Iface.wifi
             gen_icon = [Iface.wifi, wifi_quality]
-        try:
-            if netifaces.AF_INET in netifaces.ifaddresses(vpn_iface):
-                gen_icon.append(Iface.vpn)
-        except ValueError:
-            pass
 
         return [gen_icon], text
 
