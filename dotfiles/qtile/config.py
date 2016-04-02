@@ -14,7 +14,7 @@ import volume
 from subprocess import call
 
 float_name = ('MPlayer',)
-float_class = ('Xephyr', 'Weston Compositor', 'BLHeliSuite.exe', 'MW_OSD_GUI')
+float_class = ('Xephyr', 'Weston Compositor', 'BLHeliSuite.exe', 'MW_OSD_GUI', 'yubikey-personalization-gui')
 
 
 @hook.subscribe.startup_once
@@ -123,32 +123,36 @@ layouts = [
     layout.Max()
 ]
 
-colors = [
-    ["#7cfcff", "#00afff"],  # cyan gradiant
-    ["#656565", "#323335"],  # grey gradiant
-    ["#040404", "#292929"]   # darker grey gradiant
-]
+cyan = ["#00afff", "#8cfcff"]
+red = ["#bb0000", "#990000"]
+lt_grey = ["#828282", "#a4a4a4"]
+med_grey = ["#494949", "#595959"]
+grey = ["#656565", "#323232"]
+dk_grey = ["#040404", "#292929"]
 
 widget_defaults = dict(
     font="DejaVu",
-    fontsize=11, padding=2, background=colors[2]
+    fontsize=11, padding=2, background=dk_grey
 )
 
 prompt = "{0}@{1}: ".format(os.environ["USER"], socket.gethostname())
 
 widgets1 = [
     widget.Prompt(prompt=prompt, padding=10,
-                  background=colors[1]),
-    widget.TextBox(text=u"\u25e4 ", fontsize=42, padding=-8,
-                   foreground=colors[1], background=colors[2]),
-    widget.GroupBox(fontsize=8, padding=4, borderwidth=1), #, highlight_method='line',
-                    #background_color=colors[2], highlight_color=colors[1][::-1], line_thickness=3),
-    widget.TextBox(text=u"\u25e4", fontsize=42, padding=-1,
-                   foreground=colors[2], background=colors[1]),
-    widget.TaskList(borderwidth=1, background=colors[1],
-                    border=colors[0], urgent_border=colors[0]),
-    widget.TextBox(text=u"\u25e4 ", fontsize=42, padding=-8,
-                   foreground=colors[1], background=colors[2]),
+                  background=grey),
+    widget.TextBox(text="\u25e4 ", fontsize=42, padding=-8,
+                   foreground=grey),
+    widget.GroupBox(borderwidth=4, highlight_method='line', margin=0, disable_drag=True,
+                    this_current_screen_border=cyan,
+                    this_screen_border=lt_grey,
+                    other_screen_border=med_grey,
+                    urgent_border=red),
+    widget.TextBox(text="\u25e4", fontsize=42, padding=-1,
+                   foreground=dk_grey, background=grey),
+    widget.TaskList(borderwidth=1, background=grey,
+                    border=cyan, urgent_border=red),
+    widget.TextBox(text="\u25e4 ", fontsize=42, padding=-8,
+                   foreground=grey),
     # widget.TextBox(text=u'\U0001f321'),
     widget.Systray(),
     widget.Clock(format='%m-%d-%Y %a %H:%M:%S'),
@@ -158,14 +162,18 @@ widgets1 = [
 
 widgets2 = [
     widget.TextBox(text="\u25e4 ", fontsize=42, padding=-8,
-                   foreground=colors[1], background=colors[2]),
-    widget.GroupBox(fontsize=9, padding=4, borderwidth=1),
+                   foreground=grey),
+    widget.GroupBox(borderwidth=4, highlight_method='line', margin=0, disable_drag=True,
+                    this_current_screen_border=cyan,
+                    this_screen_border=lt_grey,
+                    other_screen_border=med_grey,
+                    urgent_border=red),
     widget.TextBox(text="\u25e4", fontsize=42, padding=-1,
-                   foreground=colors[2], background=colors[1]),
-    widget.TaskList(borderwidth=1, background=colors[1],
-                    border=colors[0], urgent_border=colors[0]),
+                   foreground=dk_grey, background=grey),
+    widget.TaskList(borderwidth=1, background=grey,
+                    border=cyan, urgent_border=red),
     widget.TextBox(text="\u25e4 ", fontsize=42, padding=-8,
-                   foreground=colors[1], background=colors[2]),
+                   foreground=grey),
     networkmonitor.NetworkMonitor(),
     widget.Clock(format='%m-%d-%Y %a %H:%M:%S'),
     volume.Volume(),
