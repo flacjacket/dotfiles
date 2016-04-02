@@ -102,8 +102,8 @@ bindkey "^[f" forward-word
 bindkey "^[d" backward-delete-word
 
 # virtualenv wrapper
-export WORKON_HOME=~/.venvs
-source /usr/bin/virtualenvwrapper.sh
+#export WORKON_HOME=~/.venvs
+#source /usr/bin/virtualenvwrapper.sh
 
 if [[ -f ~/.dir_colors ]] ; then
     eval $(dircolors -b ~/.dir_colors)
