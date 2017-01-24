@@ -138,7 +138,7 @@ c.NotebookApp.open_browser = False
 #   from notebook.auth import passwd; passwd()
 # 
 # The string should be of the form type:salt:hashed-password.
-# c.NotebookApp.password = ''
+c.NotebookApp.password = u'sha1:e67a999ebbbb:7fcaee2c514dd62631f2010360f44600986b8d80'
 
 # The file where the cookie secret is stored.
 # c.NotebookApp.cookie_secret_file = ''

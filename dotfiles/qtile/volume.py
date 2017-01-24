@@ -1,98 +1,47 @@
-from icontextbox import IconTextBox
+from libqtile.widget.base import ThreadedPollText
 
-import cairocffi
 import re
+import shlex
 import subprocess
 
-VOL_LOW = 30
+VOL_LOW = 40
 VOL_HIGH = 80
 
 
-def _stroke_speaker(ctx):
-    ctx.set_source_rgb(1, 1, 1)
-    ctx.set_line_width(5)
-    ctx.set_line_join(cairocffi.LINE_JOIN_ROUND)
-    ctx.move_to(39.389, 26.769)
-    ctx.line_to(22.235, 41.606)
-    ctx.line_to(6, 41.606)
-    ctx.line_to(6, 60.699)
-    ctx.line_to(21.989, 60.699)
-    ctx.line_to(39.389, 75.75)
-    ctx.line_to(39.389, 26.769)
-    ctx.close_path()
-    ctx.stroke_preserve()
-    ctx.fill()
-
-
-def _stroke_mute(ctx):
-    ctx.set_source_rgb(1, 1, 1)
-    ctx.set_line_width(5)
-    ctx.set_line_cap(cairocffi.LINE_CAP_ROUND)
-    ctx.move_to(48.651772, 63.269646)
-    ctx.line_to(69.395223, 38.971024)
-    ctx.stroke()
-    ctx.move_to(69.395223, 63.269646)
-    ctx.line_to(48.651772, 38.971024)
-    ctx.stroke()
-
-
-def _stroke_low(ctx):
-    ctx.set_source_rgb(1, 1, 1)
-    ctx.set_line_width(5)
-    ctx.set_line_cap(cairocffi.LINE_CAP_ROUND)
-    ctx.move_to(48.128, 62.03)
-    ctx.curve_to(50.057, 58.934, 51.19, 55.291, 51.19, 51.377)
-    ctx.curve_to(51.19, 47.399, 50.026, 43.703, 48.043, 40.577)
-    ctx.stroke()
-
-
-def _stroke_medium(ctx):
-    ctx.set_source_rgb(1, 1, 1)
-    ctx.set_line_width(5)
-    ctx.set_line_cap(cairocffi.LINE_CAP_ROUND)
-    ctx.move_to(55.082, 33.537)
-    ctx.curve_to(58.777, 38.523, 60.966, 44.694, 60.966, 51.377)
-    ctx.curve_to(60.966, 57.998, 58.815, 64.115, 55.178, 69.076)
-    ctx.stroke()
-
-
-def _stroke_high(ctx):
-    ctx.set_source_rgb(1, 1, 1)
-    ctx.set_line_width(5)
-    ctx.set_line_cap(cairocffi.LINE_CAP_ROUND)
-    ctx.move_to(61.71, 75.611)
-    ctx.curve_to(66.977, 68.945, 70.128, 60.531, 70.128, 51.378)
-    ctx.curve_to(70.128, 42.161, 66.936, 33.696, 61.609, 27.01)
-    ctx.stroke()
-
 re_vol = re.compile('\[(\d?\d?\d?)%\]')
 
+getvol_cmd = "amixer -c {cardid} sget {channel}"
+voltoggle_cmd = "amixer -c {cardid} -q sset {channel} toggle"
+volup_cmd = "amixer -c {cardid} -q sset {channel} {increment}%+"
+voldown_cmd = "amixer -c {cardid} -q sset {channel} {increment}%-"
 
-class Volume(IconTextBox):
+
+class Volume(ThreadedPollText):
     defaults = [
-        ('update_interval', 1, 'The update interval'),
+        ('update_interval', 3, 'The update interval'),
         ("cardid", 0, "Card Id"),
         ("channel", "Master", "Channel"),
-        ("mute_command", None, "Mute command"),
-        ("volume_up_command", None, "Volume up command"),
-        ("volume_down_command", None, "Volume down command"),
+        ("vol_increment", 4, "Percent to change the volume"),
     ]
 
     def __init__(self, **config):
-        IconTextBox.__init__(self, **config)
+        ThreadedPollText.__init__(self, **config)
         self.add_defaults(Volume.defaults)
 
-        self.icon_size = 75, 100
+        self.markup = True
         self.volume = None
+        self.muted = None
+        self.is_new_volume = False
+
+        self.clear_new = None
 
     def get_volume(self):
-        mixerprocess = subprocess.Popen(
-            ['amixer', '-c', str(self.cardid), 'sget', self.channel],
-            stdout=subprocess.PIPE
-        )
+        cmd = self.format_cmd(getvol_cmd)
+        mixerprocess = subprocess.Popen(shlex.split(cmd), stdout=subprocess.PIPE)
         mixer_out = mixerprocess.communicate()[0].decode()
+
         if mixerprocess.returncode:
-            return -1
+            return None
 
         if '[off]' in mixer_out:
             return -1
@@ -102,29 +51,72 @@ class Volume(IconTextBox):
             return int(volgroups.groups()[0])
         else:
             # this shouldn't happen
-            return -1
+            return None
 
     def poll(self):
-        self.volume = self.get_volume()
+        next_volume = self.get_volume()
 
-        if self.volume <= 0:
-            return [0], ""
+        if next_volume is None:
+            return "VolumeError "
+
+        if self.volume is not None and (next_volume != self.volume):
+            if self.clear_new is not None:
+                self.clear_new.cancel()
+
+            self.is_new_volume = True
+
+            def clear_it(w):
+                w.is_new_volume = False
+                w.tick()
+            self.clear_new = self.qtile.call_later(3, clear_it, self)
+
+        self.volume = next_volume
+
+        muted = self.volume < 0
+
+        if muted:
+            return '<big>\U0001f507</big>'
         elif self.volume <= VOL_LOW:
-            return [1], ""
+            icon = '<big>\uf026</big> '
         elif self.volume <= VOL_HIGH:
-            return [2], ""
+            icon = '<big>\uf027</big> '
         else:
-            return [3], ""
+            icon = '<big>\uf028</big> '
 
-    def gen_icon(self, level, ctx):
-        _stroke_speaker(ctx)
+        if self.is_new_volume:
+            return icon + " {:d}".format(self.volume)
 
-        if level == 0:
-            _stroke_mute(ctx)
+        return icon
 
-        if level >= 1:
-            _stroke_low(ctx)
-        if level >= 2:
-            _stroke_medium(ctx)
-        if level >= 3:
-            _stroke_high(ctx)
+    def button_press(self, x, y, button):
+        if button == 1:
+            self.cmd_toggle()
+        elif button == 4:
+            self.cmd_volume_up()
+        elif button == 5:
+            self.cmd_volume_down()
+
+    def cmd_toggle(self):
+        cmd = self.format_cmd(voltoggle_cmd)
+        process = subprocess.call(shlex.split(cmd))
+
+        self.tick()
+
+    def cmd_volume_up(self):
+        cmd = self.format_cmd(volup_cmd, increment=self.vol_increment)
+        process = subprocess.call(shlex.split(cmd))
+
+        self.tick()
+
+    def cmd_volume_down(self):
+        cmd = self.format_cmd(voldown_cmd, increment=self.vol_increment)
+        process = subprocess.call(shlex.split(cmd))
+
+        self.tick()
+
+    def format_cmd(self, cmd, **kwargs):
+        return cmd.format(
+            cardid=self.cardid,
+            channel=self.channel,
+            **kwargs
+        )

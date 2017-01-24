@@ -16,11 +16,10 @@ from subprocess import call
 float_name = ('MPlayer',)
 float_class = ('Xephyr', 'Weston Compositor', 'BLHeliSuite.exe', 'MW_OSD_GUI', 'yubikey-personalization-gui')
 
-
 @hook.subscribe.startup_once
 def start_once():
     resize()
-    call(['xsetroot', '-cursor_name', 'left_ptr'])
+    #call(['xsetroot', '-cursor_name', 'left_ptr'])
     #call(['dropbox'])
 
 
@@ -79,7 +78,7 @@ keys = [
     # Applications
     Key([mod], "c", lazy.spawn("firefox")),
     Key([mod], "l", lazy.spawn("clementine")),
-    Key([mod], "Return", lazy.spawn("urxvt")),
+    Key([mod], "Return", lazy.spawn("alacritty")),
     # Key([mod], "i", lazy.spawn("ipython qtconsole --profile labwork")),
     Key([mod], "i", lazy.spawn("jupyter qtconsole")),
     Key([mod, "shift"], "l", lazy.spawn("xscreensaver-command -lock")),
@@ -92,9 +91,9 @@ keys = [
     Key([], "XF86AudioPlay", lazy.spawn("clementine --play-pause")),
     Key([], "XF86AudioNext", lazy.spawn("clementine --next")),
     Key([], "XF86AudioPrev", lazy.spawn("clementine --prev")),
-    Key([], "XF86AudioMute", lazy.spawn("/home/sean/.config/qtile/volume.sh mute")),
-    Key([], "XF86AudioLowerVolume", lazy.spawn("/home/sean/.config/qtile/volume.sh down")),
-    Key([], "XF86AudioRaiseVolume", lazy.spawn("/home/sean/.config/qtile/volume.sh up"))
+    Key([], "XF86AudioMute", lazy.widget["volume"].toggle()),
+    Key([], "XF86AudioLowerVolume", lazy.widget["volume"].volume_down()),
+    Key([], "XF86AudioRaiseVolume", lazy.widget["volume"].volume_up()),
     # Key([], "XF86MicMute", lazy.spawn("/home/sean/.qtile/volume.sh mic")),
 ]
 
@@ -153,11 +152,13 @@ widgets1 = [
                     border=cyan, urgent_border=red),
     widget.TextBox(text="\u25e4 ", fontsize=42, padding=-8,
                    foreground=grey),
-    # widget.TextBox(text=u'\U0001f321'),
+    #widget.TextBox(text=u'\U0001f321'),
     widget.Systray(),
+    widget.TextBox(text="\u2328", foreground=cyan),
+    widget.KeyboardLayout(configured_keyboards=["us dvorak", "us"], foreground=cyan, update_interval=5),
     widget.Clock(format='%m-%d-%Y %a %H:%M:%S'),
-    networkmonitor.NetworkMonitor(),
-    volume.Volume(),
+    networkmonitor.NetworkMonitor(font="fontawesome"),
+    volume.Volume(font="fontawesome"),
 ]
 
 widgets2 = [
@@ -174,9 +175,11 @@ widgets2 = [
                     border=cyan, urgent_border=red),
     widget.TextBox(text="\u25e4 ", fontsize=42, padding=-8,
                    foreground=grey),
-    networkmonitor.NetworkMonitor(),
+    widget.TextBox(text="\u2328", foreground=cyan),
+    widget.KeyboardLayout(configured_keyboards=["us dvorak", "us"], foreground=cyan, update_interval=5),
     widget.Clock(format='%m-%d-%Y %a %H:%M:%S'),
-    volume.Volume(),
+    networkmonitor.NetworkMonitor(font="fontawesome"),
+    volume.Volume(font="fontawesome"),
 ]
 
 if os.path.exists('/sys/class/power_supply/BAT0'):
