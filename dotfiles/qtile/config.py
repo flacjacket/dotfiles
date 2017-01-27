@@ -10,6 +10,7 @@ from resize import resize
 import battery
 import networkmonitor
 import volume
+import tempsensor
 
 from subprocess import call
 
@@ -156,9 +157,10 @@ widgets1 = [
     widget.Systray(),
     widget.TextBox(text="\u2328", foreground=cyan),
     widget.KeyboardLayout(configured_keyboards=["us dvorak", "us"], foreground=cyan, update_interval=5),
-    widget.Clock(format='%m-%d-%Y %a %H:%M:%S'),
+    tempsensor.TempSensor(font="fontawesome"),
     networkmonitor.NetworkMonitor(font="fontawesome"),
     volume.Volume(font="fontawesome"),
+    widget.Clock(format='%m-%d-%Y %a %H:%M:%S'),
 ]
 
 widgets2 = [
@@ -177,9 +179,10 @@ widgets2 = [
                    foreground=grey),
     widget.TextBox(text="\u2328", foreground=cyan),
     widget.KeyboardLayout(configured_keyboards=["us dvorak", "us"], foreground=cyan, update_interval=5),
-    widget.Clock(format='%m-%d-%Y %a %H:%M:%S'),
+    tempsensor.TempSensor(font="fontawesome"),
     networkmonitor.NetworkMonitor(font="fontawesome"),
     volume.Volume(font="fontawesome"),
+    widget.Clock(format='%m-%d-%Y %a %H:%M:%S'),
 ]
 
 if os.path.exists('/sys/class/power_supply/BAT0'):

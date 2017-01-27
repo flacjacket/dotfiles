@@ -37,8 +37,9 @@ class NetworkMonitor(ThreadedPollText):
                     pass
             return "\uf127"
 
-        c = get_iwconfig(iface)
-        if b'Access Point' not in c:
+        try:
+            c = get_iwconfig(iface)
+        except AttributeError:
             if iface[:3] == "usb":
                 return "\uf287"
             else:

@@ -12,8 +12,8 @@ re_vol = re.compile('\[(\d?\d?\d?)%\]')
 
 getvol_cmd = "amixer -c {cardid} sget {channel}"
 voltoggle_cmd = "amixer -c {cardid} -q sset {channel} toggle"
-volup_cmd = "amixer -c {cardid} -q sset {channel} {increment}%+"
-voldown_cmd = "amixer -c {cardid} -q sset {channel} {increment}%-"
+volup_cmd = "amixer -c {cardid} -q sset {channel} {increment}dB+"
+voldown_cmd = "amixer -c {cardid} -q sset {channel} {increment}dB-"
 
 
 class Volume(ThreadedPollText):
@@ -21,7 +21,7 @@ class Volume(ThreadedPollText):
         ('update_interval', 3, 'The update interval'),
         ("cardid", 0, "Card Id"),
         ("channel", "Master", "Channel"),
-        ("vol_increment", 4, "Percent to change the volume"),
+        ("vol_increment", 2, "dB to change the volume"),
     ]
 
     def __init__(self, **config):
@@ -37,10 +37,9 @@ class Volume(ThreadedPollText):
 
     def get_volume(self):
         cmd = self.format_cmd(getvol_cmd)
-        mixerprocess = subprocess.Popen(shlex.split(cmd), stdout=subprocess.PIPE)
-        mixer_out = mixerprocess.communicate()[0].decode()
-
-        if mixerprocess.returncode:
+        try:
+            mixer_out = subprocess.check_output(shlex.split(cmd)).decode()
+        except subprocess.CalledProcessError:
             return None
 
         if '[off]' in mixer_out:
